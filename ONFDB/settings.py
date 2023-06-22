@@ -38,6 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'FDS.apps.FdsConfig',
+    'rest_framework_swagger',
+    'rest_framework',
+    'accounts',
+
 ]
 
 MIDDLEWARE = [
@@ -70,7 +74,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'ONFDB.wsgi.application'
-
+REST_FRAMEWORK = { 'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema' }
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
