@@ -1,12 +1,9 @@
-from .serializers import AccountSerializer, AccountDetailsSerializer, AccountRegistrationSerializer
+from .serializers import AccountSerializer,  AccountRegistrationSerializer
 from .models import Account
 from rest_framework.views import APIView
 from django.contrib.auth import authenticate, login, logout
-from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 

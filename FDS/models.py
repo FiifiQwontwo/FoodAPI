@@ -59,9 +59,8 @@ class Delivery(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     menu_item = models.ForeignKey(MenuItem, on_delete=models.CASCADE)
     customer = models.ForeignKey(Account, on_delete=models.CASCADE, related_name="customer_orders")
-    status = models.CharField(max_length=25,choices=FOOD_STATUS, default=1)
+    status = models.CharField(max_length=25, choices=FOOD_STATUS, default=1)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.status
-
