@@ -20,7 +20,7 @@ def upload_to(instance, filename):
 class MenuItem(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='menu_items')
     name_of_meal = models.CharField(max_length=100)
-    picture = models.ImageField(upload_to=upload_to)
+    picture = models.ImageField(upload_to=upload_to, blank=True, null=True)
     description = models.CharField(max_length=200)
     price = models.DecimalField(max_digits=8, decimal_places=2)
 
