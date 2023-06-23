@@ -42,7 +42,7 @@ class Account(AbstractBaseUser):
     first_name = models.CharField(max_length=60)
     last_name = models.CharField(max_length=50)
     email = models.EmailField(max_length=50, unique=True)
-    phone = models.CharField(max_length=50)
+    phone = models.CharField(max_length=50, unique=True)
     # required Fields
     date_joined = models.DateTimeField(verbose_name='date joined', auto_now_add=True)
     last_login = models.DateTimeField(verbose_name='last login', auto_now=True)
