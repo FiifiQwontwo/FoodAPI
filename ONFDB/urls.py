@@ -16,22 +16,23 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from django.conf import settings
-from django.conf.urls.static import static
-from rest_framework.schemas import get_swagger_view
-from django.views.generic import TemplateView
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
 
-schema_view = get_swagger_view(title='Food Delivery API')
+schema_view = get_schema_view(
+    openapi.Info(
+        title="Food Delivery API",
+        default_version='v1',
+        description="Food Delivery API documentation ",
+        contact=openapi.Contact(email="ahwirengfiifi@gmail.com"),
+
+    ),
+    public=True,
+)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/v1/', include([
-        # Your API endpoints...
-    ])),
-    path('docs/', TemplateView.as_view(
-        template_name='index.html',
-        extra_context={'schema_url': 'openapi-schema'}
-    ), name='swagger-ui'),
-]
+    path('swagger/', schema_view.with_ui('swagger'), name='schema-swagger-ui'),
+    path('redoc/', schema_view.with_ui('redoc'), name='schema-redoc'),
 
-urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+]
