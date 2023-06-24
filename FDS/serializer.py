@@ -83,3 +83,26 @@ class OrderCreateSerializer(serializers.ModelSerializer):
         )
 
         return order
+
+
+class DeliveryListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Delivery
+        fields = ('customer', 'order', 'menu_item', 'status', 'created_at',)
+
+
+class DeliveryCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Delivery
+        fields = ('customer', 'order', 'menu_item', 'status')
+
+    def save(self):
+        new_delivery = Delivery(
+            customer=self.validated_data['customer'],
+            order=self.validated_data['order'],
+            menu_item=self.validated_data['menu_item'],
+            status=self.validated_data['status'],
+
+        )
+        new_delivery.save()
+        return new_delivery

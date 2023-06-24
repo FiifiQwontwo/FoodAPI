@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from .models import *
 from .serializer import RestaurantListSerializer, RestaurantCreateSerializer, MenuListSerializer, MenuCreateSerializer, \
-    OrderCreateSerializer, OrderListSerializer
+    OrderCreateSerializer, OrderListSerializer, DeliveryCreateSerializer, DeliveryListSerializer
 
 
 # Create your views here.
@@ -44,7 +44,7 @@ class OrderListView(APIView):
     def get(self, request):
         order = Order.objects.all()
         serializer = OrderListSerializer(order, many=True)
-        return Response(serializer.data,status=status.HTTP_200_OK)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class CreateOrderView(APIView):
@@ -53,5 +53,23 @@ class CreateOrderView(APIView):
         serializer = OrderCreateSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data,status=status.HTTP_201_CREATED)
-        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class DeliveryListView(APIView):
+
+    def get(self, request):
+        delivery = Delivery.objects.all()
+        serializer = DeliveryListSerializer(delivery, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class CreateDeliveryView(APIView):
+
+    def post(self, request):
+        serializer = DeliveryCreateSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

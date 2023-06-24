@@ -46,6 +46,7 @@ class Order(models.Model):
     food = models.ForeignKey(MenuItem, on_delete=models.CASCADE, related_name='Food_Orders')
     quantity = models.PositiveIntegerField(default=1)
     created_at = models.DateTimeField(auto_now_add=True)
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2, default=2.0)
 
     def sub_total(self):
         return self.food.price * self.quantity
