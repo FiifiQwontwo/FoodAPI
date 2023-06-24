@@ -4,10 +4,36 @@ from rest_framework.response import Response
 from .models import *
 from .serializer import RestaurantListSerializer, RestaurantCreateSerializer, MenuListSerializer, MenuCreateSerializer, \
     OrderCreateSerializer, OrderListSerializer, DeliveryCreateSerializer, DeliveryListSerializer
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 
 
 # Create your views here.
 class RestaurantList(APIView):
+    @swagger_auto_schema(
+        operation_description="List Restaurant",
+        responses={
+            200: openapi.Response(
+                description="OK",
+                schema=openapi.Schema(
+                    type=openapi.TYPE_ARRAY,
+                    items=openapi.Schema(
+                        type=openapi.TYPE_OBJECT,
+                        properties={
+                            'name': openapi.Schema(type=openapi.TYPE_STRING, description='name of restaurant'),
+                            'phone': openapi.Schema(type=openapi.TYPE_NUMBER, description='Phone of restaurant'),
+                            'email': openapi.Schema(type=openapi.TYPE_STRING, description='email of restaurant'),
+                            'address': openapi.Schema(type=openapi.TYPE_STRING, description='address of restaurant'),
+                        },
+                    ),
+                ),
+            ),
+            400: 'Bad Request',
+            401: 'Unauthorized',
+            403: 'Forbidden',
+            500: 'Internal Server Error',
+        }
+    )
     def get(self, request):
         rest = Restaurant.objects.all()
         serializer = RestaurantListSerializer(rest, many=True)
@@ -15,6 +41,28 @@ class RestaurantList(APIView):
 
 
 class RestaurantCreateView(APIView):
+
+    @swagger_auto_schema(
+        operation_description="Create a new Restaurant",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            required=['name', 'phone', 'email', 'address'],
+            properties={
+                'name': openapi.Schema(type=openapi.TYPE_STRING, description='name of the restaurant'),
+                'phone': openapi.Schema(type=openapi.TYPE_STRING, description='phone number of the restaurant'),
+                'email': openapi.Schema(type=openapi.TYPE_STRING, description='email of the restaurant'),
+                'address': openapi.Schema(type=openapi.TYPE_STRING, description='address of the restaurant'),
+
+            }
+        ),
+        responses={
+            201: 'Created',
+            400: 'Bad Request',
+            401: 'Unauthorized',
+            403: 'Forbidden',
+            500: 'Internal Server Error',
+        }
+    )
     def post(self, request):
         serializer = RestaurantCreateSerializer(data=request.data)
         if serializer.is_valid():
@@ -24,6 +72,31 @@ class RestaurantCreateView(APIView):
 
 
 class MenuList(APIView):
+    @swagger_auto_schema(
+        operation_description="List Menu",
+        responses={
+            200: openapi.Response(
+                description="OK",
+                schema=openapi.Schema(
+                    type=openapi.TYPE_ARRAY,
+                    items=openapi.Schema(
+                        type=openapi.TYPE_OBJECT,
+                        properties={
+                            'restaurant': openapi.Schema(type=openapi.TYPE_INTEGER, description='ID of the restaurant'),
+                            'name_of_meal': openapi.Schema(type=openapi.TYPE_STRING, description='name of the food'),
+                            'picture': openapi.Schema(type=openapi.TYPE_FILE, description='picture of the food'),
+                            'description': openapi.Schema(type=openapi.TYPE_STRING, description='details of the food'),
+                            'price': openapi.Schema(type=openapi.TYPE_NUMBER, description='price of the food'),
+                        },
+                    ),
+                ),
+            ),
+            400: 'Bad Request',
+            401: 'Unauthorized',
+            403: 'Forbidden',
+            500: 'Internal Server Error',
+        }
+    )
     def get(self, request):
         menu = MenuItem.objects.all()
         serializer = MenuListSerializer(menu, many=True)
@@ -31,6 +104,27 @@ class MenuList(APIView):
 
 
 class MenuCreateView(APIView):
+    @swagger_auto_schema(
+        operation_description="Create a new Menu",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            required=['restaurant', 'name_of_meal', 'picture', 'description', 'price'],
+            properties={
+                'restaurant': openapi.Schema(type=openapi.TYPE_INTEGER, description='ID of the restaurant'),
+                'name_of_meal': openapi.Schema(type=openapi.TYPE_STRING, description='name of  food '),
+                'picture': openapi.Schema(type=openapi.TYPE_FILE, description='Picture of the food '),
+                'description': openapi.Schema(type=openapi.TYPE_STRING, description='description of the food '),
+                'price': openapi.Schema(type=openapi.TYPE_NUMBER, description='Price of the food '),
+            }
+        ),
+        responses={
+            201: 'Created',
+            400: 'Bad Request',
+            401: 'Unauthorized',
+            403: 'Forbidden',
+            500: 'Internal Server Error',
+        }
+    )
     def post(self, request):
         serializer = MenuCreateSerializer(data=request.data)
         if serializer.is_valid():
@@ -40,7 +134,31 @@ class MenuCreateView(APIView):
 
 
 class OrderListView(APIView):
-
+    @swagger_auto_schema(
+        operation_description="List Orders",
+        responses={
+            200: openapi.Response(
+                description="OK",
+                schema=openapi.Schema(
+                    type=openapi.TYPE_ARRAY,
+                    items=openapi.Schema(
+                        type=openapi.TYPE_OBJECT,
+                        properties={
+                            'customer': openapi.Schema(type=openapi.TYPE_INTEGER, description='ID of the customer'),
+                            'restaurant': openapi.Schema(type=openapi.TYPE_INTEGER, description='ID of the restaurant'),
+                            'food': openapi.Schema(type=openapi.TYPE_INTEGER, description='ID of the menu item'),
+                            'quantity': openapi.Schema(type=openapi.TYPE_INTEGER, description='quantity ordered'),
+                            'total_amount': openapi.Schema(type=openapi.TYPE_INTEGER, description='order total'),
+                        },
+                    ),
+                ),
+            ),
+            400: 'Bad Request',
+            401: 'Unauthorized',
+            403: 'Forbidden',
+            500: 'Internal Server Error',
+        }
+    )
     def get(self, request):
         order = Order.objects.all()
         serializer = OrderListSerializer(order, many=True)
@@ -48,7 +166,26 @@ class OrderListView(APIView):
 
 
 class CreateOrderView(APIView):
-
+    @swagger_auto_schema(
+        operation_description="Create a new order",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            required=['customer', 'restaurant', 'food', 'quantity'],
+            properties={
+                'customer': openapi.Schema(type=openapi.TYPE_INTEGER, description='ID of the customer'),
+                'restaurant': openapi.Schema(type=openapi.TYPE_INTEGER, description='ID of the restaurant'),
+                'food': openapi.Schema(type=openapi.TYPE_INTEGER, description='ID of the food item'),
+                'quantity': openapi.Schema(type=openapi.TYPE_INTEGER, description='Quantity of the food item'),
+            }
+        ),
+        responses={
+            201: 'Created',
+            400: 'Bad Request',
+            401: 'Unauthorized',
+            403: 'Forbidden',
+            500: 'Internal Server Error',
+        }
+    )
     def post(self, request):
         serializer = OrderCreateSerializer(data=request.data)
         if serializer.is_valid():
@@ -58,7 +195,32 @@ class CreateOrderView(APIView):
 
 
 class DeliveryListView(APIView):
-
+    @swagger_auto_schema(
+        operation_description="List deliveries",
+        responses={
+            200: openapi.Response(
+                description="OK",
+                schema=openapi.Schema(
+                    type=openapi.TYPE_ARRAY,
+                    items=openapi.Schema(
+                        type=openapi.TYPE_OBJECT,
+                        properties={
+                            'customer': openapi.Schema(type=openapi.TYPE_INTEGER, description='ID of the customer'),
+                            'order': openapi.Schema(type=openapi.TYPE_INTEGER, description='ID of the order'),
+                            'menu_item': openapi.Schema(type=openapi.TYPE_INTEGER, description='ID of the menu item'),
+                            'status': openapi.Schema(type=openapi.TYPE_STRING, description='Delivery status'),
+                            'created_at': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_DATETIME,
+                                                         description='Date and time of creation'),
+                        },
+                    ),
+                ),
+            ),
+            400: 'Bad Request',
+            401: 'Unauthorized',
+            403: 'Forbidden',
+            500: 'Internal Server Error',
+        }
+    )
     def get(self, request):
         delivery = Delivery.objects.all()
         serializer = DeliveryListSerializer(delivery, many=True)
@@ -66,7 +228,27 @@ class DeliveryListView(APIView):
 
 
 class CreateDeliveryView(APIView):
-
+    @swagger_auto_schema(
+        operation_description="Create a new delivery",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            required=['order', 'menu_item', 'customer', 'status'],
+            properties={
+                'customer': openapi.Schema(type=openapi.TYPE_INTEGER),
+                'order': openapi.Schema(type=openapi.TYPE_INTEGER),
+                'menu_item': openapi.Schema(type=openapi.TYPE_INTEGER),
+                'status': openapi.Schema(type=openapi.TYPE_STRING),
+                'created_at': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_DATETIME),
+            }
+        ),
+        responses={
+            201: 'Created',
+            400: 'Bad Request',
+            401: 'Unauthorized',
+            403: 'Forbidden',
+            500: 'Internal Server Error',
+        }
+    )
     def post(self, request):
         serializer = DeliveryCreateSerializer(data=request.data)
         if serializer.is_valid():

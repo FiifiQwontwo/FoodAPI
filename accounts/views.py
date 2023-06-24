@@ -5,9 +5,32 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse
 from rest_framework import status
 from rest_framework.response import Response
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 
 
 class RegistrationView(APIView):
+    @swagger_auto_schema(
+        operation_description="Create a new delivery",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            required=['last_name', 'first_name', 'email', 'phone', 'password', 'password2'],
+            properties={
+                'last_name': openapi.Schema(type=openapi.TYPE_STRING),
+                'first_name': openapi.Schema(type=openapi.TYPE_STRING),
+                'phone': openapi.Schema(type=openapi.TYPE_NUMBER),
+                'password': openapi.Schema(type=openapi.TYPE_STRING),
+                'password2': openapi.Schema(type=openapi.TYPE_STRING),
+            }
+        ),
+        responses={
+            201: 'Created',
+            400: 'Bad Request',
+            401: 'Unauthorized',
+            403: 'Forbidden',
+            500: 'Internal Server Error',
+        }
+    )
     def post(self, request):
         serializer = AccountRegistrationSerializer(data=request.data)
         if serializer.is_valid():
@@ -23,6 +46,7 @@ class LogoutView(APIView):
 
 
 class LoginView(APIView):
+
     def post(self, request):
         if 'email' not in request.data or 'password' not in request.data:
             return Response({'msg': 'Credentials missing'}, status=status.HTTP_400_BAD_REQUEST)
@@ -36,6 +60,34 @@ class LoginView(APIView):
 
 
 class UserList(APIView):
+    @swagger_auto_schema(
+        operation_description="List Users",
+        responses={
+            200: openapi.Response(
+                description="OK",
+                schema=openapi.Schema(
+                    type=openapi.TYPE_ARRAY,
+                    items=openapi.Schema(
+                        type=openapi.TYPE_OBJECT,
+                        properties={
+                            'last_name': openapi.Schema(type=openapi.TYPE_STRING),
+                            'first_name': openapi.Schema(type=openapi.TYPE_STRING),
+                            'email': openapi.Schema(type=openapi.TYPE_STRING),
+                            'phone': openapi.Schema(type=openapi.TYPE_STRING),
+                            'date_joined': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_DATETIME),
+                            'last_login': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_DATETIME),
+                            'is_active': openapi.Schema(type=openapi.TYPE_BOOLEAN),
+                            'is_admin': openapi.Schema(type=openapi.TYPE_BOOLEAN),
+                        },
+                    ),
+                ),
+            ),
+            400: 'Bad Request',
+            401: 'Unauthorized',
+            403: 'Forbidden',
+            500: 'Internal Server Error',
+        }
+    )
     def get(self, request):
         user = Account.objects.all()
         serializer = AccountSerializer(user, many=True)
