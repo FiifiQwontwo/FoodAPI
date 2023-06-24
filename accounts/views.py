@@ -1,4 +1,4 @@
-from .serializers import AccountSerializer,  AccountRegistrationSerializer
+from .serializers import AccountSerializer, AccountRegistrationSerializer
 from .models import Account
 from rest_framework.views import APIView
 from django.contrib.auth import authenticate, login, logout
@@ -11,7 +11,7 @@ from drf_yasg.utils import swagger_auto_schema
 
 class RegistrationView(APIView):
     @swagger_auto_schema(
-        operation_description="Create a new delivery",
+        operation_description="Create a new User",
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
             required=['last_name', 'first_name', 'email', 'phone', 'password', 'password2'],
@@ -40,13 +40,53 @@ class RegistrationView(APIView):
 
 
 class LogoutView(APIView):
+    @swagger_auto_schema(
+        operation_description="User logout",
+        responses={
+            200: openapi.Response(
+                description="OK",
+                schema=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'msg': openapi.Schema(type=openapi.TYPE_STRING, description='Response message'),
+                    },
+                ),
+            ),
+            401: 'Unauthorized',
+            500: 'Internal Server Error',
+        }
+    )
     def post(self, request):
         logout(request)
         return Response({'msg': 'Successfully Logged out'}, status=status.HTTP_200_OK)
 
 
 class LoginView(APIView):
-
+    @swagger_auto_schema(
+        operation_description="User login",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'email': openapi.Schema(type=openapi.TYPE_STRING, description='User email'),
+                'password': openapi.Schema(type=openapi.TYPE_STRING, description='User password'),
+            },
+            required=['email', 'password'],
+        ),
+        responses={
+            200: openapi.Response(
+                description="OK",
+                schema=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'msg': openapi.Schema(type=openapi.TYPE_STRING, description='Response message'),
+                    },
+                ),
+            ),
+            400: 'Bad Request',
+            401: 'Unauthorized',
+            500: 'Internal Server Error',
+        }
+    )
     def post(self, request):
         if 'email' not in request.data or 'password' not in request.data:
             return Response({'msg': 'Credentials missing'}, status=status.HTTP_400_BAD_REQUEST)
@@ -91,4 +131,4 @@ class UserList(APIView):
     def get(self, request):
         user = Account.objects.all()
         serializer = AccountSerializer(user, many=True)
-        return Response(serializer.data,  status=status.HTTP_200_OK)
+        return Response(serializer.data, status=status.HTTP_200_OK)
