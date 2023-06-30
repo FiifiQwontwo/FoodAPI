@@ -258,33 +258,30 @@ class CreateDeliveryView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+
 class RestaurantDetailAPI(APIView):
     @swagger_auto_schema(
-        ooperation_description="Get Restaurant Details",
+        operation_description="Get Restaurant Details",
         responses={
-            "200": RestaurantDetailSerializer(),
+            200: RestaurantDetailSerializer(),
             404: "Restaurant not found",
         }
     )
     def get(self, request, pk):
         try:
-            def get(self, request, pk):
-                try:
-                    restaurant = Restaurant.objects.get(pk=pk)
-                    serializer = RestaurantDetailSerializer(restaurant)
-                    return Response(serializer.data, status=status.HTTP_200_OK)
-                except Restaurant.DoesNotExist:
-                    return Response({'Error': 'Restaurant not found'}, status=status.HTTP_404_NOT_FOUND)
+            restaurant = Restaurant.objects.get(pk=pk)
+            serializer = RestaurantDetailSerializer(restaurant)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Restaurant.DoesNotExist:
+            return Response({'Error': 'Restaurant not found'}, status=status.HTTP_404_NOT_FOUND)
 
-
-       @swagger_auto_schema(
-           operaation_description = "Delete RRestaurant",
-           responses={
-               204:"Restaurant Deleted",
-               404:"Restaurant Not Found",
-           }
-       )
-
+    @swagger_auto_schema(
+        operation_description="Delete Restaurant",
+        responses={
+            204: "Restaurant Deleted",
+            404: "Restaurant Not Found",
+        }
+    )
     def delete(self, request, pk):
         try:
             restaurant = Restaurant.objects.get(pk=pk)
