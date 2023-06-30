@@ -55,7 +55,6 @@ class Order(models.Model):
         return str(self.customer.phone)
 
 
-
 class Delivery(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     menu_item = models.ForeignKey(MenuItem, on_delete=models.CASCADE)

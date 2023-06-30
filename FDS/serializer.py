@@ -58,6 +58,13 @@ class OrderListSerializer(serializers.ModelSerializer):
         return obj.sub_total()
 
 
+class MenuItemSerial(serializers.ModelSerializer):
+    food = OrderListSerializer(source='food_orders', many=True)
+
+
+fields = ('name', 'price', 'order')
+
+
 class OrderCreateSerializer(serializers.ModelSerializer):
     sub_total = serializers.SerializerMethodField()
 
