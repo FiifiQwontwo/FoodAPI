@@ -24,27 +24,39 @@ class RestaurantCreateSerializer(serializers.ModelSerializer):
         return new_restaurant
 
 
-class MenuListSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = MenuItem
-        fields = ('name_of_meal', 'restaurant', 'picture', 'price', 'description')
-
-
+# class MenuCreateSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = MenuItem
+#         fields = ('name_of_meal', 'restaurant', 'picture', 'price', 'description')
+#
+#     def validate(self, data):
+#         if data['name_of_meal'] == data['description']:
+#             raise serializers.ValidationError(' Name and Description cant be same')
+#         else:
+#             return value
+#
+#     def save(self):
+#         new_menu = MenuItem(
+#             name_of_meal=self.validated_data['name_of_meal'],
+#             restaurant=self.validated_data['restaurant'],
+#             picture=self.validated_data['picture'],
+#             description=self.validated_data['description'],
+#             price=self.validated_data['price']
+#         )
+#         new_menu.save()
+#         return new_menu
 class MenuCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = MenuItem
         fields = ('name_of_meal', 'restaurant', 'picture', 'price', 'description')
 
-    def save(self):
-        new_menu = MenuItem(
-            name_of_meal=self.validated_data['name_of_meal'],
-            restaurant=self.validated_data['restaurant'],
-            picture=self.validated_data['picture'],
-            description=self.validated_data['description'],
-            price=self.validated_data['price']
-        )
-        new_menu.save()
-        return new_menu
+    def validate(self, data):
+        if data['name_of_meal'] == data['description']:
+            raise serializers.ValidationError('Name and Description cannot be the same.')
+        return data
+
+    def create(self, validated_data):
+        return MenuItem.objects.create(**validated_data)
 
 
 class OrderListSerializer(serializers.ModelSerializer):
@@ -113,3 +125,11 @@ class DeliveryCreateSerializer(serializers.ModelSerializer):
         )
         new_delivery.save()
         return new_delivery
+
+
+class MenuListSerializer(serializers.ModelSerializer):
+    food_orders = OrderListSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = MenuItem
+        fields = "__all__"
