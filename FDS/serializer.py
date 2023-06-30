@@ -133,3 +133,9 @@ class MenuListSerializer(serializers.ModelSerializer):
     class Meta:
         model = MenuItem
         fields = "__all__"
+
+
+class RestaurantDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Restaurant
+        fields = ('id', 'name', 'phone', 'email', 'address')
