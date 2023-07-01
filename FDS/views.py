@@ -200,7 +200,7 @@ class DeliveryListView(APIView):
         operation_description="List deliveries",
         responses={
             200: openapi.Response(
-                description="OK",
+                description="OK  delivery List",
                 schema=openapi.Schema(
                     type=openapi.TYPE_ARRAY,
                     items=openapi.Schema(
@@ -243,7 +243,7 @@ class CreateDeliveryView(APIView):
             }
         ),
         responses={
-            201: 'Created',
+            201: 'Created a  New Delivery',
             400: 'Bad Request',
             401: 'Unauthorized',
             403: 'Forbidden',
