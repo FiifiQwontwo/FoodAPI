@@ -258,9 +258,9 @@ class CreateDeliveryView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
 class RestaurantDetailAPI(APIView):
     @swagger_auto_schema(
+
         operation_description="Get Restaurant Details",
         responses={
             200: RestaurantDetailSerializer(),
