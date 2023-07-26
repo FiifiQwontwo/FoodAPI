@@ -1,10 +1,11 @@
+from rest_framework.generics import UpdateAPIView
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
 from .models import *
 from .serializer import RestaurantListSerializer, RestaurantCreateSerializer, MenuListSerializer, MenuCreateSerializer, \
     OrderCreateSerializer, OrderListSerializer, DeliveryCreateSerializer, DeliveryListSerializer, \
-    RestaurantDetailSerializer
+    RestaurantDetailSerializer, DeliveryUpdateSerializer
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 
@@ -289,3 +290,30 @@ class RestaurantDetailAPI(APIView):
             return Response({'Error': 'Restaurant not found'}, status=status.HTTP_404_NOT_FOUND)
         restaurant.delete()
         return Response({'message': 'Restaurant deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
+
+
+ # Create the API view for updating the delivery
+class UpdateDeliveryView(UpdateAPIView):
+    queryset = Delivery.objects.all()
+    serializer_class = DeliveryUpdateSerializer
+
+    @swagger_auto_schema(
+        operation_description="Update an existing delivery",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            required=['status'],
+            properties={
+                'status': openapi.Schema(type=openapi.TYPE_STRING),
+            }
+        ),
+        responses={
+            200: 'Delivery updated successfully',
+            400: 'Bad Request',
+            401: 'Unauthorized',
+            403: 'Forbidden',
+            404: 'Delivery not found',
+            500: 'Internal Server Error',
+        }
+    )
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)

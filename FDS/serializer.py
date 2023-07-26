@@ -107,7 +107,7 @@ class OrderCreateSerializer(serializers.ModelSerializer):
 class DeliveryListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Delivery
-        fields = ('customer', 'order', 'menu_item', 'status', 'created_at',)
+        fields = ('id', 'customer', 'order', 'menu_item', 'status', 'created_at',)
 
 
 class DeliveryCreateSerializer(serializers.ModelSerializer):
@@ -139,3 +139,10 @@ class RestaurantDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Restaurant
         fields = ('id', 'name', 'phone', 'email', 'address')
+
+
+class DeliveryUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Delivery
+        fields = ['status']
+

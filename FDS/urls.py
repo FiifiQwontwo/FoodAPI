@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import RestaurantList, RestaurantCreateView, MenuList, MenuCreateView, OrderListView, CreateOrderView,DeliveryListView, CreateDeliveryView, RestaurantDetailAPI
+from .views import RestaurantList, RestaurantCreateView, UpdateDeliveryView,  MenuList, MenuCreateView, OrderListView, CreateOrderView,DeliveryListView, CreateDeliveryView, RestaurantDetailAPI
 
 app_name = 'FDS'
 
@@ -14,5 +14,6 @@ urlpatterns = [
     path('neworders/', CreateOrderView.as_view(), name='neworder_api_url'),
     path('deliveries/', DeliveryListView.as_view(), name='deliveries_api_url'),
     path('newdelivery/', CreateDeliveryView.as_view(), name='newdelivery_api_url'),
+    path('newdelivery/<int:pk>', UpdateDeliveryView.as_view(), name='update existing delivery_api_url'),
 
 ]
